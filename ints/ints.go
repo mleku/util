@@ -70,12 +70,13 @@ func (n *T) MarshalJSON(dst B) (b B, err error) {
 	return
 }
 
-// UnmarshalJSON reads a string, which must be a positive integer no larger than math.MaxUint64, skipping any
-// non-numeric content before it.
+// UnmarshalJSON reads a string, which must be a positive integer no larger than math.MaxUint64,
+// skipping any non-numeric content before it.
 //
-// Note that leading zeros are not considered valid, but basically no such thing as machine generated JSON integers with
-// leading zeroes. Until this is disproven, this is the fastest way to read a positive json integer, and a leading zero
-// is decoded as a zero, and the remainder returned.
+// Note that leading zeros are not considered valid, but basically no such thing as machine
+// generated JSON integers with leading zeroes. Until this is disproven, this is the fastest way
+// to read a positive json integer, and a leading zero is decoded as a zero, and the remainder
+// returned.
 func (n *T) UnmarshalJSON(b B) (r B, err error) {
 	var sLen int
 	if b[0] == zero {

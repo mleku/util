@@ -38,8 +38,8 @@ func lc(cl func() string) {
 	}
 }
 
-// T creates an unbuffered chan struct{} for trigger and quit signalling
-// (momentary and breaker switches)
+// T creates an unbuffered chan struct{} for trigger and quit signalling (momentary and breaker
+// switches)
 func T() C {
 	mx.Lock()
 	defer mx.Unlock()
@@ -52,10 +52,9 @@ func T() C {
 	return o
 }
 
-// Ts creates a buffered chan struct{} which is specifically intended for
-// signalling without blocking, generally one is the size of buffer to be used,
-// though there might be conceivable cases where the channel should accept more
-// signals without blocking the caller
+// Ts creates a buffered chan struct{} which is specifically intended for signalling without
+// blocking, generally one is the size of buffer to be used, though there might be conceivable
+// cases where the channel should accept more signals without blocking the caller
 func Ts(n int) C {
 	mx.Lock()
 	defer mx.Unlock()

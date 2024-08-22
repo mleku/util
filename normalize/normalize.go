@@ -18,8 +18,7 @@ var (
 
 // URL normalizes the URL
 //
-// - Adds wss:// to addresses without a port, or with 443 that have no protocol
-// prefix
+// - Adds wss:// to addresses without a port, or with 443 that have no protocol prefix
 //
 // - Adds ws:// to addresses with any other port
 //
@@ -30,12 +29,12 @@ func URL(u B) (b B) {
 	}
 	u = bytes.TrimSpace(u)
 	u = bytes.ToLower(u)
-	// if address has a port number, we can probably assume it is insecure
-	// websocket as most public or production relays have a domain name and a
-	// well known port 80 or 443 and thus no port number.
+	// if address has a port number, we can probably assume it is insecure websocket as most
+	// public or production relays have a domain name and a well known port 80 or 443 and thus
+	// no port number.
 	//
-	// if a protocol prefix is present, we assume it is already complete.
-	// Converting http/s to websocket equivalent will be done later anyway.
+	// if a protocol prefix is present, we assume it is already complete. Converting http/s to
+	// websocket equivalent will be done later anyway.
 	if bytes.Contains(u, []byte(":")) &&
 		!(hp(u, HTTP) || hp(u, HTTPS) || hp(u, WS) || hp(u, WSS)) {
 
@@ -58,8 +57,7 @@ func URL(u B) (b B) {
 				p.Uint64())
 			return
 		}
-		// if the port is explicitly set to 443 we assume it is wss:// and drop
-		// the port.
+		// if the port is explicitly set to 443 we assume it is wss:// and drop the port.
 		if p.Uint16() == 443 {
 			u = append(WSS, split[0]...)
 		} else {
@@ -67,8 +65,8 @@ func URL(u B) (b B) {
 		}
 	}
 
-	// if prefix isn't specified as http/s or websocket, assume secure websocket
-	// and add wss prefix (this is the most common).
+	// if prefix isn't specified as http/s or websocket, assume secure websocket and add wss
+	// prefix (this is the most common).
 	if !(hp(u, HTTP) || hp(u, HTTPS) || hp(u, WS) || hp(u, WSS)) {
 		u = append(WSS, u...)
 	}
@@ -89,7 +87,8 @@ func URL(u B) (b B) {
 	return B(p.String())
 }
 
-// Msg constructs a properly formatted message with a machine readable prefix for OK and CLOSED envelopes.
+// Msg constructs a properly formatted message with a machine readable prefix for OK and CLOSED
+// envelopes.
 func Msg(prefix Reason, format S, params ...any) B {
 	if len(prefix) < 1 {
 		prefix = Error
