@@ -22,6 +22,8 @@ var (
 	Cancel = context.WithCancel
 	// Timeout - context.WithTimeout
 	Timeout = context.WithTimeout
+	// TimeoutCause - context.WithTimeoutCause
+	TimeoutCause = context.WithTimeoutCause
 	// TODO - context.TODO
 	TODO = context.TODO
 	// Value - context.WithValue

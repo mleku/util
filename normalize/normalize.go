@@ -23,7 +23,8 @@ var (
 // - Adds ws:// to addresses with any other port
 //
 // - Converts http/s to ws/s
-func URL(u B) (b B) {
+func URL[V S | B](v V) (b B) {
+	u := B(v)
 	if len(u) == 0 {
 		return nil
 	}
