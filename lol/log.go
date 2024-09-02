@@ -270,16 +270,17 @@ func New(writer io.Writer) (l *Log, c *Check, errorf *Errorf) {
 
 // Timestamper e
 func Timestamper() (s string) {
-	timeText := fmt.Sprint(time.Now().UnixNano())
-	lt := len(timeText)
-	lb := lt + 1
-	var timeBytes = make([]byte, lb)
-	copy(timeBytes[lb-9:lb], timeText[lt-9:lt])
-	timeBytes[lb-10] = '.'
-	lb -= 10
-	lt -= 9
-	copy(timeBytes[:lb], timeText[:lt])
-	return fmt.Sprint(string(timeBytes))
+	// timeText := fmt.Sprint(time.Now().UnixNano())
+	// lt := len(timeText)
+	// lb := lt + 1
+	// var timeBytes = make([]byte, lb)
+	// copy(timeBytes[lb-9:lb], timeText[lt-9:lt])
+	// timeBytes[lb-10] = '.'
+	// lb -= 10
+	// lt -= 9
+	// copy(timeBytes[:lb], timeText[:lt])
+	// return fmt.Sprint(string(timeBytes))
+	return
 }
 
 func GetLoc(skip int) (output string) {

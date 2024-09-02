@@ -110,7 +110,7 @@ var (
 	Unsupported  = Reason("unsupported")
 )
 
-func (r Reason) S() S                              { return S(r) }
-func (r Reason) B() B                              { return B(r) }
-func (r Reason) IsPrefix(reason B) bool            { return bytes.HasPrefix(reason, r.B()) }
-func (r Reason) Message(format S, params ...any) B { return Msg(r, format, params...) }
+func (r Reason) S() S                        { return S(r) }
+func (r Reason) B() B                        { return B(r) }
+func (r Reason) IsPrefix(reason B) bool      { return bytes.HasPrefix(reason, r.B()) }
+func (r Reason) F(format S, params ...any) B { return Msg(r, format, params...) }
