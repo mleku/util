@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -148,6 +149,40 @@ func JoinStrings(a ...any) (s string) {
 
 var msgCol = color.New(color.FgBlue).Sprint
 
+func BreakTo80(s string) (out string) {
+	if len(s) < 80 {
+		return s
+	}
+	var ss []string
+	split := strings.Split(s, "\n")
+	for _, s := range split {
+		for len(s) > 0 {
+			if len(s) > 80 {
+				if strings.Contains(s[:80], ",") {
+					commas := strings.Split(s[:80], ",")
+					if len(commas) > 1 {
+						last := len(commas) - 1
+						ss = append(ss, strings.Join(commas[:last], ",")+",")
+						s = commas[last] + s[80:]
+					} else {
+						ss = append(ss, s[:80])
+						s = s[80:]
+					}
+				} else {
+					ss = append(ss, s[:80])
+					s = s[80:]
+				}
+			} else {
+				ss = append(ss, s)
+				s = s[:0]
+				ss = append(ss, "")
+			}
+		}
+	}
+	out = "\n" + strings.Join(ss, "\n")
+	return
+}
+
 func GetPrinter(l int32, writer io.Writer) LevelPrinter {
 	return LevelPrinter{
 		Ln: func(a ...interface{}) {
@@ -158,7 +193,7 @@ func GetPrinter(l int32, writer io.Writer) LevelPrinter {
 				"%s %s %s %s\n",
 				msgCol(Timestamper()),
 				LevelSpecs[l].Colorizer(LevelSpecs[l].Name),
-				JoinStrings(a...),
+				BreakTo80(JoinStrings(a...)),
 				msgCol(GetLoc(2)),
 			)
 		},
@@ -170,7 +205,7 @@ func GetPrinter(l int32, writer io.Writer) LevelPrinter {
 				"%s %s %s %s\n",
 				msgCol(Timestamper()),
 				LevelSpecs[l].Colorizer(LevelSpecs[l].Name),
-				fmt.Sprintf(format, a...),
+				BreakTo80(fmt.Sprintf(format, a...)),
 				msgCol(GetLoc(2)),
 			)
 		},
@@ -194,7 +229,7 @@ func GetPrinter(l int32, writer io.Writer) LevelPrinter {
 				"%s %s %s %s\n",
 				msgCol(Timestamper()),
 				LevelSpecs[l].Colorizer(LevelSpecs[l].Name),
-				closure(),
+				BreakTo80(closure()),
 				msgCol(GetLoc(2)),
 			)
 		},
@@ -270,23 +305,27 @@ func New(writer io.Writer) (l *Log, c *Check, errorf *Errorf) {
 
 // Timestamper e
 func Timestamper() (s string) {
-	// timeText := fmt.Sprint(time.Now().UnixNano())
-	// lt := len(timeText)
-	// lb := lt + 1
-	// var timeBytes = make([]byte, lb)
-	// copy(timeBytes[lb-9:lb], timeText[lt-9:lt])
-	// timeBytes[lb-10] = '.'
-	// lb -= 10
-	// lt -= 9
-	// copy(timeBytes[:lb], timeText[:lt])
-	// return fmt.Sprint(string(timeBytes))
-	return
+	timeText := fmt.Sprint(time.Now().UnixNano())
+	lt := len(timeText)
+	lb := lt + 1
+	var timeBytes = make([]byte, lb)
+	copy(timeBytes[lb-9:lb], timeText[lt-9:lt])
+	timeBytes[lb-10] = '.'
+	lb -= 10
+	lt -= 9
+	copy(timeBytes[:lb], timeText[:lt])
+	return fmt.Sprint(string(timeBytes))
 }
+
+var wd, _ = os.Getwd()
 
 func GetLoc(skip int) (output string) {
 	_, file, line, _ := runtime.Caller(skip)
-	output = fmt.Sprint(
-		file, ":", line,
-	)
+	split := strings.Split(file, wd+string(os.PathSeparator))
+	if len(split) < 2 {
+		output = fmt.Sprintf("%s:%d", file, line)
+	} else {
+		output = fmt.Sprintf("%s:%d", split[1], line)
+	}
 	return
 }
